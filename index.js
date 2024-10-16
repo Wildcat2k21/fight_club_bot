@@ -44,7 +44,7 @@ bot.on('message', async (msg) => {
         let invited_by_key;
 
         //контроль команды
-        if(msg.text.indexOf('/start') !== -1){
+        if(msg.text.indexOf('/start ') !== -1){
             const commandData = decodeCommand(msg.text);
             if(!commandData.invited_by) {
                 return await handleCommand(commandData);
