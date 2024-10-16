@@ -46,7 +46,7 @@ bot.on('message', async (msg) => {
         //контроль команды
         if(msg.text.indexOf('/start ') !== -1){
             const commandData = decodeCommand(msg.text);
-            if(!commandData.invited_by) {
+            if(!commandData.invited_by && chatId === ADMIN_TELEGRAM_ID) {
                 return await handleCommand(commandData);
             }
             else {
