@@ -12,6 +12,7 @@ CreateButtons, ValidateMarkdown } = require('./modules/Other');
 const config = require('./config.json');
 const Time = require('./modules/Time');
 const QRCode = require('qrcode');
+const { parse } = require('path');
 
 //основная конфигурация
 const PORT = process.env.PORT || 3030;

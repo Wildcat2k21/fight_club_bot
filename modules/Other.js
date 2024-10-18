@@ -152,6 +152,11 @@ function ValidateMarkdown(text) {
     
     for (let i = 0; i < text.length; i++) {
         const char = text[i];
+
+        // Проверяем, если перед символом стоит один /
+        if (i > 0 && text[i - 1] === '\\') {
+            continue;
+        }
         
         // Проверка на начало форматирования
         if (markdownSymbols.includes(char)) {
