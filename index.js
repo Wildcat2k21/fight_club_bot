@@ -37,7 +37,6 @@ function escapeMarkdown(text) {
 //обработчик команд
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
-    WriteInLogFile(chatId);
 
     try{
 
