@@ -12,7 +12,6 @@ CreateButtons, ValidateMarkdown } = require('./modules/Other');
 const config = require('./config.json');
 const Time = require('./modules/Time');
 const QRCode = require('qrcode');
-const { parse } = require('path');
 
 //основная конфигурация
 const PORT = process.env.PORT || 3030;
@@ -116,8 +115,13 @@ bot.on('message', async (msg) => {
             return await handleEditDiscount(state, msg.text);
         }
 
+        //сообщение об начале диалога
+        if(msg.text === '/start' && state){
+            return await bot.sendMessage(chatId, 'Вы уже начали диалог ✔️', state.options);
+        }
+
         //личный кабинет авторизованного пользователя
-        bot.sendMessage(chatId, '❓Команда не распознана', state.options);
+        await bot.sendMessage(chatId, '❓Команда не распознана', state.options);
     }
     catch(err){
         WriteInLogFile(err);
