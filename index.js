@@ -1638,7 +1638,7 @@ async function notifyMerch(state){
     const mailData = {
         audience: 'Всем',
         title: `У нас пополнение ассортимента — ${merch.title} 🔥`,
-        content: `${merch.content}/n/n*Заказать можно во вкладке "Мои мерчи"*`
+        content: `${merch.content}/n/n*Заказать можно во вкладке "Заказать Мерч"*`
     }
 
     await sendMail(mailData);
