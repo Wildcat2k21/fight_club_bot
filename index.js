@@ -43,7 +43,7 @@ bot.on('message', async (msg) => {
         let invited_by_key;
 
         //контроль команды
-        if(msg.text.indexOf('/start ') !== -1){
+        if(msg.text && msg.text.indexOf('/start ') !== -1){
             const commandData = decodeCommand(msg.text);
             if(!commandData.invited_by && chatId === ADMIN_TELEGRAM_ID) {
                 return await handleCommand(commandData);
@@ -61,12 +61,12 @@ bot.on('message', async (msg) => {
 
         //чат администратора
         if(state.chatId === ADMIN_TELEGRAM_ID && isNewUser){
-            return bot.sendMessage(chatId, '*Администратор распознан* ✔️\n\nВам доступна панель управления и персонализация 👇', state.options);
+            return await bot.sendMessage(chatId, '*Администратор распознан* ✔️\n\nВам доступна панель управления и персонализация 👇', state.options);
         }
 
         //проверка, что пользователь новый
         if(isNewUser){
-            return bot.sendMessage(chatId, config.start_message.format(), state.options);
+            return await bot.sendMessage(chatId, config.start_message.format(), state.options);
         }
 
         // --- Блок ввода текста ---
@@ -83,31 +83,31 @@ bot.on('message', async (msg) => {
 
         //обработка создания новой рассылки
         if(state.action === 'add mail'){
-            return handleMailMenagment(state, msg.text);
+            return await handleMailMenagment(state, msg.text);
         }
 
         //обработка новой скидки
         if(state.action === 'add discount'){
-            return handleDiscountMenagment(state, msg.text);
+            return await handleDiscountMenagment(state, msg.text);
         }
 
         //изменение приветсвенного сообщения
         if(state.action === 'edit start_message' && state.stepName === 'content'){
-            return handleStartMessagePage(state, msg.text);
+            return await handleStartMessagePage(state, msg.text);
         }
         //изменение страницы оплаты
         if(state.action === 'edit payment_page' && state.stepName === 'content'){
-            return handlePaymentPage(state, msg.text);
+            return await handlePaymentPage(state, msg.text);
         }
 
         //изменение вклдаки "о нас"
         if(state.action === 'edit about_us' && state.stepName === 'content'){
-            return handleAboutUsPage(state, msg.text);
+            return await handleAboutUsPage(state, msg.text);
         }
 
         //участие в событии
         if(state.action === 'join event'){
-            return handleJoinEvent(state, msg.text);
+            return await handleJoinEvent(state, msg.text);
         }
 
         //изменение скидки
@@ -765,7 +765,7 @@ async function userRegistration(telegram_id, username, nickname, invited_by_key)
 
     //проверка наличия имени пользователя в телеграме
     if(!username){
-        return await bot.sendMessage(chatId, `Похоже, что при регистрации вы не указывали имя для связи с вами в телеграме 👇/n/n
+        return await bot.sendMessage(telegram_id, `Похоже, что при регистрации вы не указывали имя для связи с вами в телеграме 👇/n/n
         Перейдите в "настройки" - "мой аккаунт" - "имя пользователя" заполните поле и продолжите`.format(), CreateButtons([{
             text: 'готово 👌',
             data: 'default'
