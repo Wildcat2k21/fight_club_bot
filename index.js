@@ -62,13 +62,14 @@ bot.on('message', async (msg) => {
         //поиск состояния
         let state = states.find(state => state.chatId === chatId);
 
-        //чат администратора
-        if(state.chatId === ADMIN_TELEGRAM_ID && authResult){
-            return await bot.sendMessage(chatId, '*Администратор распознан* ✔️\n\nВам доступна панель управления и персонализация 👇', state.options);
-        }
-
-        //проверка, что пользователь новый (результат true - новый пользователь)
+        //проверка на нового пользователя
         if(authResult){
+
+            //чат администратора
+            if(state.chatId === ADMIN_TELEGRAM_ID){
+                return await bot.sendMessage(chatId, '*Администратор распознан* ✔️\n\nВам доступна панель управления и персонализация 👇', state.options);
+            }
+
             return await bot.sendMessage(chatId, config.start_message.format(), state.options);
         }
 
@@ -149,6 +150,17 @@ async function callback_handler(msg){
 
         //инициализация состояния
         state = states.find(state => state.chatId === chatId);
+
+        //проверка, что пользователь новый
+        if(authResult){
+            
+            //чат администратора
+            if(chatId === ADMIN_TELEGRAM_ID){
+                return await bot.sendMessage(chatId, '*Администратор распознан* ✔️\n\nВам доступна панель управления и персонализация 👇', state.options);
+            }
+
+            return await bot.sendMessage(chatId, config.start_message.format(), state.options);
+        }
 
         // ---------------------------- Обработка событий администратора -----------------------------
 
