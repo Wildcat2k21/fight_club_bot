@@ -1575,14 +1575,14 @@ async function sendMail(mail){
     //рассылка
     for(let user of userToMail){
 
-        if(user.telegram_id === ADMIN_TELEGRAM_ID){
-            continue
-        }
+        if(user.telegram_id === ADMIN_TELEGRAM_ID) continue
 
-        await bot.sendMessage(user.telegram_id, `
-            *${mail.title}*/n/n
-            ${mail.content}
-        `.format(), {parse_mode: 'Markdown'});
+        try {
+            await bot.sendMessage(user.telegram_id, `
+                *${mail.title}*/n/n
+                ${mail.content}
+            `.format(), {parse_mode: 'Markdown'});
+        }catch(e){}
     }
 }
 
