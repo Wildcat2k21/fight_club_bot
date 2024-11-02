@@ -54,18 +54,21 @@ bot.on('message', async (msg) => {
         }
 
         //авторизация пользователя
-        const isNewUser = await authUser(msg.from, msg.text, invited_by_key);
+        const authResult = await authUser(msg.from, msg.text, invited_by_key);
+
+        //недаучное создание пользователя, выход
+        if(authResult instanceof Error) return;
         
         //поиск состояния
         let state = states.find(state => state.chatId === chatId);
 
         //чат администратора
-        if(state.chatId === ADMIN_TELEGRAM_ID && isNewUser){
+        if(state.chatId === ADMIN_TELEGRAM_ID && authResult){
             return await bot.sendMessage(chatId, '*Администратор распознан* ✔️\n\nВам доступна панель управления и персонализация 👇', state.options);
         }
 
-        //проверка, что пользователь новый
-        if(isNewUser){
+        //проверка, что пользователь новый (результат true - новый пользователь)
+        if(authResult){
             return await bot.sendMessage(chatId, config.start_message.format(), state.options);
         }
 
@@ -139,7 +142,10 @@ async function callback_handler(msg){
     try {
 
         //сценарий авторизации
-        await authUser(msg.from);
+        const authResult = await authUser(msg.from);
+
+        //недаучное создание пользователя, выход
+        if(authResult instanceof Error) return;
 
         //инициализация состояния
         state = states.find(state => state.chatId === chatId);
@@ -565,6 +571,9 @@ async function authUser(sender, messageText = '', invited_by_key){
 
         const userId = await userRegistration(sender.id, sender.username, sender.first_name, invited_by_key);
 
+        //выйти, если не указано имя в тг
+        if(userId instanceof Error) return userId;
+
         //данные о новом пользователе
         userData = await db.find('users', [[{
             field: 'telegram_id',
@@ -765,11 +774,13 @@ async function userRegistration(telegram_id, username, nickname, invited_by_key)
 
     //проверка наличия имени пользователя в телеграме
     if(!username){
-        return await bot.sendMessage(telegram_id, `Похоже, что при регистрации вы не указывали имя для связи с вами в телеграме 👇/n/n
+        await bot.sendMessage(telegram_id, `Похоже, что при регистрации вы не указывали имя для связи с вами в телеграме 👇/n/n
         Перейдите в "настройки" - "мой аккаунт" - "имя пользователя" заполните поле и продолжите`.format(), CreateButtons([{
             text: 'готово 👌',
             data: 'default'
         }]));
+
+        return new Error("Не передано имя в телеграм");
     }
     
     let invited_by, discount = 0, existInvitedBy;
