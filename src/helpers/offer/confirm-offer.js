@@ -4,6 +4,7 @@ const { randCode } = require('@utils/other');
 const { CONFIG_FILE } = require('@consts/file-paths');
 const config = require(CONFIG_FILE);
 const createButtons = require('@utils/create-buttons');
+const escapeMarkdown = require('@utils/escape-markdown');
 
 const tableNames = {
     event: 'event_offers',
@@ -60,7 +61,7 @@ async function confirmOffer(state, offerType, offerId) {
             const newDiscount = invitedByUser.discount += config.invite_discount;
             const normalDiscount = newDiscount > 100 ? 100 : newDiscount;
             await db.update('users', { discount: normalDiscount }, [[{ field: 'telegram_id', exacly: user.invited_by }]]);
-            await bot.sendMessage(user.invited_by, `*Пользователь @${user.username} сделал платный заказ*/n/n
+            await bot.sendMessage(user.invited_by, `*Пользователь @${escapeMarkdown(user.username)} сделал платный заказ*/n/n
             🎁 Вы получаете дополнительный бонус ${config.invite_discount} % на все`.format(), { parse_mode: 'Markdown' });
         }
     }
@@ -70,7 +71,7 @@ async function confirmOffer(state, offerType, offerId) {
         exacly: offerId
     }]]);
 
-    await bot.sendMessage(state.chatId, `*Заказ на ${offerClause} "${offer.title}" от @${user.username} подтвержден ✔️*`, { parse_mode: 'Markdown' });
+    await bot.sendMessage(state.chatId, `*Заказ на ${offerClause} "${offer.title}" от @${escapeMarkdown(user.username)} подтвержден ✔️*`, { parse_mode: 'Markdown' });
 
     //рассылка пользователю
     await bot.sendMessage(user.telegram_id, `*Заказ на ${offerClause} "${offer.title}" подтвержден ✔️*/n/n

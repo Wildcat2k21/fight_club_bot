@@ -40,8 +40,8 @@ async function confirmJoinRaffle(state) {
         ADMIN_TELEGRAM_ID,
         `ℹ *Новая заявка на участие в розыгрыше: "${raffle.title}"*/n
         *К оплате:* ${priceClause}/n/n
-        *От:* ${escapeMarkdown(state.data.fullname)}/n
-        *Контакт:* @${existUser.username}/n
+        *От:* ${state.data.fullname}/n
+        *Контакт:* @${escapeMarkdown(existUser.username)}/n
         *Телефон:* ${state.data.phone}/n/n
         *Заявка также будет отображена в "Заказах", где её можно подтвердить или отклонить*
         `.format(),

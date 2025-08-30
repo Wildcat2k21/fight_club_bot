@@ -3,6 +3,7 @@ const { db, bot } = getServices();
 const { CONFIG_FILE } = require('@consts/file-paths');
 const config = require(CONFIG_FILE);
 const { randCode } = require('@utils/other');
+const createButtons = require('@utils/create-buttons.js');
 
 //регистрация нового пользователя
 async function userRegistration(telegram_id, username, nickname, invited_by_key) {

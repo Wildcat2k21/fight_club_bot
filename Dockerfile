@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 3030
 
-CMD ["node", "app/index.js"]
+CMD ["node", "src/index.js"]
