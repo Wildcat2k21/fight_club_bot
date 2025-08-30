@@ -3,8 +3,25 @@
   "version": "1.0.0",
   "description": "fight blub bot app",
   "main": "index.js",
+  "_moduleAliases": {
+    "@": "src",
+    "@utils": "src/utils",
+    "@services": "src/services",
+    "@helpers": "src/helpers",
+    "@discount": "src/helpers/discount",
+    "@event": "src/helpers/event",
+    "@mailing": "src/helpers/mailing",
+    "@merch": "src/helpers/merch",
+    "@offer": "src/helpers/offer",
+    "@other": "src/helpers/other",
+    "@pages": "src/helpers/pages",
+    "@consts": "src/consts",
+    "@api": "src/helpers/api"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npx nodemon src/index.js",
+    "start": "node src/index.js",
+    "lint": "npx eslint ."
   },
   "keywords": [
     "node",
@@ -18,8 +35,15 @@
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "module-alias": "^2.2.3",
     "node-telegram-bot-api": "^0.66.0",
     "qrcode": "^1.5.4",
     "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.34.0",
+    "eslint": "^9.34.0",
+    "globals": "^16.3.0",
+    "nodemon": "^3.1.10"
   }
 }

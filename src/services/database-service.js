@@ -1,7 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const path = require('path');
-const {WriteInLogFile} = require('./Other');
+const writeInLogFile = require('../utils/logging');
 
 // Модуль для работы с базой данных
 class Database {
@@ -117,12 +117,12 @@ class Database {
                 });
 
                 // Ооги и файл инициализации
-                WriteInLogFile('База данных подключена⚡');
+                writeInLogFile('База данных подключена⚡');
                 const sqlFile = path.resolve(sqlFilePath);
 
                 // Проверка на существование не пустой базы данных
                 if(fs.statSync(dbPath).size > 0) {
-                    WriteInLogFile('Инициазация не трубется 👌');
+                    writeInLogFile('Инициазация схемы бд не требуется 👌');
                     return resolve();
                 }
 
@@ -132,7 +132,7 @@ class Database {
 
                     this.db.exec(data, (err) => {
                         if (err) return reject(new Error(`Не удалось выполнить SQL файл: ${err.message}`));
-                        WriteInLogFile('База данных успешно инициализирована ✨');
+                        writeInLogFile('База данных успешно инициализирована ✨');
                         resolve();
                     });
                 });
@@ -145,7 +145,7 @@ class Database {
         if (this.db) {
             this.db.close((err) => {
                 if (err) throw new Error(`Ошибка при закрытии базы данных: ${err.message}`) 
-                else WriteInLogFile('База данных закрыта. 👋👋👋');
+                else writeInLogFile('База данных закрыта. 👋👋👋');
             });
         }
     }
@@ -153,7 +153,6 @@ class Database {
 
 //формирование условий для запроса
 function buildSqlCondition(condition = [], limit, desc){
-
     //преобразование условия
     const operators = {
         exacly : '=',

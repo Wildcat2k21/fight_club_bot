@@ -1,4 +1,4 @@
 /node_modules
+#/sqlite/*.db
+
 logs.txt
-database.db
-config.json
