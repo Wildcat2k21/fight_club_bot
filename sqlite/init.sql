@@ -23,7 +23,7 @@ CREATE TABLE discounts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     discount INTEGER NOT NULL CHECK (discount >= 0 AND discount <= 100),
-    category TEXT CHECK (category IN ('Все', 'Участие', 'Мерчи'))
+    category TEXT CHECK (category IN ('Все', 'Участие', 'Товары'))
 );
 
 -- Таблица мероприятий
@@ -82,7 +82,7 @@ CREATE TABLE mailings (
     send_type TEXT CHECK (send_type IN ('Периодическая', 'Запланированная')) NOT NULL,
     response_time INTEGER DEFAULT NULL,
     repeats INTEGER DEFAULT NULL,
-    audience TEXT CHECK (audience IN ('Всем', 'Участникам', 'Всем, кроме участников')) NOT NULL,
+    audience TEXT CHECK (audience IN ('Всем', 'Участникам', 'Всем, кроме участников', 'Розыгрыши')) NOT NULL,
     content TEXT NOT NULL
 );
 
@@ -97,8 +97,10 @@ CREATE TABLE raffles (
 );
 
 -- Таблица участников розыгрышей (билеты/заявки)
-CREATE TABLE raffle_offers (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE raffle_tickets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,   -- автоинкрементный суррогатный ключ
+    ticket_id INTEGER NOT NULL,
+    raffle_id INTEGER NOT NULL,
     title TEXT NOT NULL,
     fullname TEXT NOT NULL,
     phone TEXT NOT NULL,
@@ -106,27 +108,35 @@ CREATE TABLE raffle_offers (
     user_telegram_id INTEGER DEFAULT NULL,
     recive_key TEXT DEFAULT NULL,
     to_pay INTEGER NOT NULL,
-    raffle_id INTEGER NOT NULL,
     created_at INTEGER DEFAULT (strftime('%s', 'now')),
+
     FOREIGN KEY (raffle_id) REFERENCES raffles(id)
         ON DELETE CASCADE
-        ON UPDATE CASCADE
+        ON UPDATE CASCADE,
     FOREIGN KEY (user_telegram_id) REFERENCES users(telegram_id)
         ON DELETE CASCADE
-        ON UPDATE CASCADE
+        ON UPDATE CASCADE,
+
+    UNIQUE (raffle_id, ticket_id)   -- уникальная пара: розыгрыш + номер билета
 );
 
 -- Таблица победителей
-CREATE TABLE winners (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE raffle_winners (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,   -- автоинкрементный суррогатный ключ
+    position INTEGER NOT NULL,
     raffle_id INTEGER NOT NULL,
-    raffle_offer_id INTEGER DEFAULT NULL,
     prize TEXT NOT NULL,
+    raffle_ticket_id INTEGER DEFAULT NULL,
+
     FOREIGN KEY (raffle_id) REFERENCES raffles(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (raffle_offer_id) REFERENCES raffle_offers(id)
+
+    FOREIGN KEY (raffle_id, raffle_ticket_id) 
+        REFERENCES raffle_tickets(raffle_id, ticket_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    UNIQUE(raffle_id, raffle_offer_id)
+
+    UNIQUE (raffle_id, position),           -- уникальная позиция внутри конкурса
+    UNIQUE (raffle_id, raffle_ticket_id)    -- билет не может занять 2 места в одном конкурсе
 );

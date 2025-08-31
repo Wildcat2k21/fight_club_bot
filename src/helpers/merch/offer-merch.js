@@ -15,7 +15,7 @@ async function offerMerch(state, merchId) {
     }]], true);
 
     //расчет оплаты
-    const { to_pay, discountSum } = await calcOfferPayment(merch, state, 'Мерчи');
+    const { to_pay, discountSum } = await calcOfferPayment(merch, state, 'Товары');
 
     //заполнение состояния
     state.data.id = merchId;

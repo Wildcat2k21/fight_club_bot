@@ -15,7 +15,7 @@ async function rafflesList(state) {
         return await bot.sendMessage(
             state.chatId,
             '*Тут будут отображены предстоящие розыгрыши* 🎉',
-            state.options
+            { parse_mode: 'Markdown' }
         );
     }
 
@@ -24,7 +24,7 @@ async function rafflesList(state) {
     // вывод розыгрышей
     for (let raffle of allRaffles) {
         // проверяем, есть ли заявка на участие от текущего юзера
-        const existOffer = await db.find('raffle_offers', [[{
+        const existOffer = await db.find('raffle_tickets', [[{
             field: 'user_telegram_id',
             exacly: state.chatId
         }, {
@@ -41,11 +41,11 @@ async function rafflesList(state) {
         const priceClause = Number(raffle.price) ? `${raffle.price} ₽` : "Бесплатно 🔥🔥🔥";
 
         // призы для розыгрыша
-        const prizesForRaffle = await db.find('winners', [[{ field: 'raffle_id', exacly: raffle.id }]]);
+        const prizesForRaffle = await db.find('raffle_winners', [[{ field: 'raffle_id', exacly: raffle.id }]]);
 
         const prizeClause = prizesForRaffle.length === 1
-            ? "*🎁 Приз:*"
-            : "/n*🎁 Призы:*/n";
+            ? "*🎁 Приз:* "
+            : "/n*🎁 Призы:* /n";
 
         const prizePart = prizesForRaffle.length === 1
             ? prizesForRaffle[0].prize + '/n'

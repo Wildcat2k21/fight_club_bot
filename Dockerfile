@@ -1,13 +1,20 @@
-FROM node
+# Лучше фиксировать версию Node, чтобы не словить несовместимости при обновлении образа
+FROM node:20-alpine  
 
-WORKDIR /app
+# Устанавливаем рабочую директорию
+WORKDIR /app  
 
-COPY package*.json ./
+# Копируем package.json и package-lock.json (если есть)
+COPY package*.json ./  
 
-RUN npm install
+# Ставим зависимости
+RUN npm ci --omit=dev  # в проде лучше npm ci (он быстрее и повторяемый)
 
-COPY . .
+# Копируем исходники
+COPY . .  
 
-EXPOSE 3030
+# Указываем порт
+EXPOSE 3030  
 
-CMD ["node", "src/index.js"]
+# Запуск
+CMD ["npm", "run", "start"]

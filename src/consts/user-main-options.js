@@ -9,7 +9,7 @@ function userMainOptions() {
         data: 'events'
     },
     {
-        text: 'Заказать мерч 🐾',
+        text: 'Купить 🐾',
         data: 'merch'
     },
     {
@@ -17,7 +17,7 @@ function userMainOptions() {
         data: 'member'
     },
     {
-        text: 'Мои мерчи ✊',
+        text: 'Мои покупки ✊',
         data: 'my merch'
     },
     {

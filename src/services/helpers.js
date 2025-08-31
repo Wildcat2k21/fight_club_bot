@@ -1,4 +1,4 @@
-const { writeInLogFile } = require('../utils/logging');
+const writeInLogFile = require('@utils/logging');
 const Database = require('./database-service');
 
 const {

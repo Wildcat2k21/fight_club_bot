@@ -13,14 +13,14 @@ async function confirmNewMerch(state) {
         }]]);
 
         state.default();
-        bot.sendMessage(state.chatId, `*Мерч №${state.data.replaceMerchId} обновлен ✔️*`, state.options);
+        bot.sendMessage(state.chatId, `*Товар №${state.data.replaceMerchId} обновлен ✔️*`, state.options);
     }
     //добавление нового события
     else {
         //кнопки  рассылки
         state.data.id = await db.insert('merch', state.data.newMerchData);
-        state.recordStep('notify', '*Мерч добавлен ✔️*', createButtons([{
-            text: 'Сделать рассылку мерча 📨',
+        state.recordStep('notify', '*товар добавлен ✔️*', createButtons([{
+            text: 'Сделать рассылку товара 📨',
             data: 'notify'
         }, {
             text: 'На главную 🔙',

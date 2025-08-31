@@ -5,6 +5,19 @@ const validateMarkdown = require('@utils/validate-markdown');
 const Time = require('@utils/time');
 const textDayFormat = require('@utils/text-day-format');
 
+const cathegories = [
+    'Запланированная',
+    'Периодическая',
+    'Моментальная',
+];
+
+const audience = [
+    'Всем',
+    'Участникам',
+    'Всем, кроме участников',
+    'Розыгрыши'
+];
+
 //управление новой рассылкой
 async function handleMailMenagment(state, message) {
 
@@ -16,15 +29,8 @@ async function handleMailMenagment(state, message) {
     //установка типа рассылки
     if (state.stepName === 'send type') {
 
-        //значения
-        const allowedValues = [
-            'Периодическая',
-            'Запланированная',
-            'Моментальная'
-        ];
-
-        if (!allowedValues.includes(message)) {
-            return bot.sendMessage(state.chatId, '🔁 Пожалуйста, введите тип рассылки\n\n(Периодическая/Запланированная/Моментальная)', state.options);
+        if (!cathegories.includes(message)) {
+            return bot.sendMessage(state.chatId, `🔁 Пожалуйста, введите тип рассылки\n\n${cathegories.join('/')})`, state.options);
         }
 
         //установка данных
@@ -62,7 +68,7 @@ async function handleMailMenagment(state, message) {
         //если рассылка разовая, то перескочить к выбору аудитории
         if (state.data.newMailData.send_type === 'Моментальная') {
             //установка следующего шага
-            state.recordStep('audience', 'ℹ️ Введите категорию для рассылки\n\nВсем/Участникам/Всем, кроме участников)', state.options);
+            state.recordStep('audience', `ℹ️ Введите аудиторию для рассылки\n\n(${audience.join('/')})`, state.options);
             return state.executeLastStep();
         }
         else if (state.data.newMailData.send_type === 'Запланированная') {
@@ -104,21 +110,15 @@ async function handleMailMenagment(state, message) {
         }
 
         //установка следующего шага
-        state.recordStep('audience', 'ℹ️ Введите категорию для рассылки\n\n(Всем/Участникам/Всем, кроме участников)', state.options);
+        state.recordStep('audience', `ℹ️ Введите аудиторию для рассылки\n\n(${audience.join('/')})`, state.options);
         return state.executeLastStep();
     }
 
     //категория
     if (state.stepName === 'audience') {
 
-        const allowedValues = [
-            'Всем',
-            'Участникам',
-            'Всем, кроме участников'
-        ];
-
-        if (!allowedValues.includes(message)) {
-            return bot.sendMessage(state.chatId, '🔁 Пожалуйста, введите категорию для рассылки\n\n(Всем/Участникам/Всем, кроме участников)', state.options);
+        if (!audience.includes(message)) {
+            return bot.sendMessage(state.chatId, `🔁 Пожалуйста, введите аудиторию для рассылки\n\n(${audience.join('/')})`, state.options);
         }
 
         //установка данных

@@ -16,7 +16,7 @@ function handleMerchMenagment(state, message) {
 
         //проверка ввода
         if (!message) {
-            return bot.sendMessage(state.chatId, '🔁 Пожалуйста, введите название для мерча', state.options);
+            return bot.sendMessage(state.chatId, '🔁 Пожалуйста, введите название для товара', state.options);
         }
 
         //установка названия события
@@ -51,7 +51,7 @@ function handleMerchMenagment(state, message) {
         state.data.newMerchData.price = message;
 
         //установка следующего шага
-        state.recordStep('content', '🤳 Введите пост о мерче', state.options);
+        state.recordStep('content', '🤳 Введите пост о товаре', state.options);
         return state.executeLastStep();
     }
 
@@ -60,7 +60,7 @@ function handleMerchMenagment(state, message) {
 
         //проверка ввода
         if (!message) {
-            return bot.sendMessage(state.chatId, '🔁 Пожалуйста, введите пост о мерче', state.options);
+            return bot.sendMessage(state.chatId, '🔁 Пожалуйста, введите пост о товаре', state.options);
         }
 
         //установка даты проведения

@@ -9,18 +9,18 @@ const escapeMarkdown = require('@utils/escape-markdown');
 const tableNames = {
     event: 'event_offers',
     merch: 'merch_offers',
-    raffle: 'raffle_offers'
+    raffle: 'raffle_tickets'
 }
 
 const actionNames = {
     event: 'участие в мероприятии',
-    merch: 'приобретение мерча',
+    merch: 'приобретение товара',
     raffle: 'участие в розыгрыше'
 }
 
 const tabNames = {
     event: 'Участникам',
-    merch: 'Мои мерчи',
+    merch: 'Мои товары',
     raffle: 'Участникам'
 }
 
@@ -73,13 +73,18 @@ async function confirmOffer(state, offerType, offerId) {
 
     await bot.sendMessage(state.chatId, `*Заказ на ${offerClause} "${offer.title}" от @${escapeMarkdown(user.username)} подтвержден ✔️*`, { parse_mode: 'Markdown' });
 
-    //рассылка пользователю
-    await bot.sendMessage(user.telegram_id, `*Заказ на ${offerClause} "${offer.title}" подтвержден ✔️*/n/n
-        Детали по заказу смотрите во вкладке "${tabNames[offerType]}"
-        `.format(), createButtons([{
-        text: 'На главную 🔙',
-        data: 'main menu'
-    }]));
+    try {
+        //рассылка пользователю
+        await bot.sendMessage(user.telegram_id, `*Заказ на ${offerClause} "${offer.title}" подтвержден ✔️*/n/n
+            Детали по заказу смотрите во вкладке "${tabNames[offerType]}"
+            `.format(), createButtons([{
+            text: 'На главную 🔙',
+            data: 'main menu'
+        }]));
+    }
+    catch {
+        /** empty string */
+    }
 }
 
 module.exports = confirmOffer;

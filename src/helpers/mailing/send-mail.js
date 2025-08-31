@@ -26,6 +26,17 @@ async function sendMail(mail) {
             userToMail = users.filter(user => !eventOffers.some(participant => participant.telegram_id === user.telegram_id));
             break;
         }
+        case 'Розыгрыши': {
+            const raffleOffers = await db.find('raffle_tickets', [[{
+                field: "accepted", exacly: 1
+            }, {
+                field: "user_telegram_id", isNull: false
+            }]]);
+
+            const users = await db.find('users');
+            userToMail = users.filter(user => raffleOffers.some(ticket => ticket.user_telegram_id === user.telegram_id));
+            break;
+        }
     }
 
     //рассылка

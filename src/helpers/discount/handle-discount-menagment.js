@@ -46,7 +46,7 @@ async function handleDiscountMenagment(state, message) {
         state.data.newDiscountData.discount = message;
 
         //установка следующего шага
-        state.recordStep('category', 'ℹ️ Введите категорию скидки (Все/Участие/Мерчи)'.format(), state.options);
+        state.recordStep('category', 'ℹ️ Введите категорию скидки (Все/Участие/товары)'.format(), state.options);
         return state.executeLastStep();
     }
 
@@ -57,7 +57,7 @@ async function handleDiscountMenagment(state, message) {
         const allowedValues = [
             'Все',
             'Участие',
-            'Мерчи'
+            'Товары'
         ];
 
         if (!allowedValues.includes(message)) {

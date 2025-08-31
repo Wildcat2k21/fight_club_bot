@@ -15,13 +15,16 @@ async function confirmNewRaffle(state) {
 
     state.data.id = raffleId;
 
-    // сохраняем призы в winners (привязка к розыгрышу, без победителя)
+    // сохраняем призы в raffle_winners (привязка к розыгрышу, без победителя)
     if (state.data.newRaffleData.prizes && state.data.newRaffleData.prizes.length > 0) {
-        for (let prize of state.data.newRaffleData.prizes) {
-            await db.insert('winners', {
+        const items = state.data.newRaffleData.prizes;
+        for (let i = 0; i < items.length; i++) {
+            const prize = items[i];
+            await db.insert('raffle_winners', {
+                position: i + 1,
                 raffle_id: raffleId,
                 prize: prize,
-                raffle_offer_id: null // пока без победителя
+                raffle_ticket_id: null // пока без победителя
             });
         }
     }

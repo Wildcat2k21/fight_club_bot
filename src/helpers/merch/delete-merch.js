@@ -8,7 +8,7 @@ async function deleteMerch(state, merchId) {
     const existMerch = await db.find('merch', [[{ field: 'id', exacly: merchId }]], true);
 
     if (!existMerch) {
-        return await bot.sendMessage(state.chatId, '*Мерч не найден* ✊', { parse_mode: 'Markdown' });
+        return await bot.sendMessage(state.chatId, '*Товар не найден* ✊', { parse_mode: 'Markdown' });
     }
 
     //удаление из базы данных
@@ -17,7 +17,7 @@ async function deleteMerch(state, merchId) {
         exacly: merchId
     }]]);
 
-    bot.sendMessage(state.chatId, `*Мерч №${merchId} удален ✔️*`, state.options);
+    bot.sendMessage(state.chatId, `*Товар №${merchId} удален ✔️*`, state.options);
 }
 
 module.exports = deleteMerch;

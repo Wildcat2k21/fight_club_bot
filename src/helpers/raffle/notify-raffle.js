@@ -12,7 +12,7 @@ async function notifyRaffle(state) {
     }]], true);
 
     // получаем призы
-    const prizes = await db.find('winners', [[{
+    const prizes = await db.find('raffle_winners', [[{
         field: 'raffle_id',
         exacly: raffle.id
     }]]);
@@ -36,7 +36,7 @@ async function notifyRaffle(state) {
         ${prizeClause}
         ${prizeList}/n
         ${raffle.content}/n/n
-        *Принять участие можно во вкладке "Ближайшие события*`
+        *Принять участие можно во вкладке "Ближайшие события"*`
     };
 
     await sendMail(mailData);

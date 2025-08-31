@@ -35,14 +35,14 @@ async function handleCommand(commandData) {
 
         await bot.sendMessage(ADMIN_TELEGRAM_ID, `
             *Подпись подленная* ✔️/n/n
-            *Мерч:* "${checkOffer.title}"/n
+            *Товар:* "${checkOffer.title}"/n
             *От:* @${escapeMarkdown(thisUser.username)} ${thisUser.nickname}/n
             *Оплатил:* ${checkOffer.to_pay} ₽/n/n
             *Заказан:* ${new Time(checkOffer.created_at).toFormattedString(false)}/n
             *Заказ закрыт* ✊
         `.format(), { parse_mode: 'Markdown' });
 
-        return await bot.sendMessage(thisUser.telegram_id, `*Ваш заказ на мерч "${checkOffer.title}" закрыт* ✔️`, { parse_mode: 'Markdown' });
+        return await bot.sendMessage(thisUser.telegram_id, `*Ваш заказ на товар "${checkOffer.title}" закрыт* ✔️`, { parse_mode: 'Markdown' });
     }
 
     // --- EVENT ---
@@ -77,7 +77,7 @@ async function handleCommand(commandData) {
     // --- RAFFLE (не удаляем заказ, только показываем инфо и тикет) ---
     if (Object.keys(commandData)[0] === 'ConfirmJoinRaffle') {
         const thisReciveKey = commandData.ConfirmJoinRaffle;
-        const checkOffer = await db.find('raffle_offers', [[{
+        const checkOffer = await db.find('raffle_tickets', [[{
             field: 'recive_key',
             exacly: thisReciveKey
         }]], true);
@@ -100,7 +100,7 @@ async function handleCommand(commandData) {
         // сообщение админу — НЕ удаляем запись
         await bot.sendMessage(ADMIN_TELEGRAM_ID, `
             *Билет проверен и прошел подленность* ✔️/n
-            *Номер билета:* ${checkOffer.id}/n
+            *Номер билета:* ${checkOffer.ticket_id}/n
             *Розыгрыш:* "${raffle ? raffle.title : (checkOffer.title || '—') }"/n/n
             *ФИО держателя:* "${checkOffer.fullname}"/n
             ${thisUser ? `*От:* @${escapeMarkdown(thisUser.username)} ${thisUser.nickname}/n` : ''}
@@ -113,7 +113,7 @@ async function handleCommand(commandData) {
         // уведомление держателю билета (если он есть в users)
         if (thisUser && thisUser.telegram_id) {
             await bot.sendMessage(thisUser.telegram_id, `
-                *Номер билета:* ${checkOffer.id}/n/n
+                *Номер билета:* ${checkOffer.ticket_id}/n/n
                 *Розыгрыш:* "${raffle ? raffle.title : (checkOffer.title || '—') }"/n
                 *Статус:* Билет показан и подтверждён ✔️
             `.format(), { parse_mode: 'Markdown' });

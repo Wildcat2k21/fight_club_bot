@@ -13,7 +13,7 @@ async function eventsList(state) {
     }]]);
 
     if (!allEvents.length) {
-        return await bot.sendMessage(state.chatId, '*Тут будут отображены предстоящие мероприятия* ✊', state.options);
+        return await bot.sendMessage(state.chatId, '*Тут будут отображены предстоящие мероприятия* ✊', { parse_mode: 'Markdown' });
     }
 
     //вывод событий

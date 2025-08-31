@@ -9,12 +9,12 @@ async function userMerchHandler(state) {
     const allMerch = await db.find('merch');
 
     if (!allMerch.length) {
-        return await bot.sendMessage(state.chatId, '*Мерчи будут уже скоро* ✊', state.options);
+        return await bot.sendMessage(state.chatId, '*Товары будут уже скоро* ✊', state.options);
     }
 
     for (let item of allMerch) {
 
-        const { to_pay, discountSum } = await calcOfferPayment(item, state, 'Мерчи');
+        const { to_pay, discountSum } = await calcOfferPayment(item, state, 'Товары');
 
         const priceClause = Number(to_pay) ? `${to_pay} ₽` : "Бесплатно 🔥🔥🔥";
 

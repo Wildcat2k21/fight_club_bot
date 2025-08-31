@@ -3,6 +3,7 @@ const { bot, db } = getServices();
 const createButtons = require('@utils/create-buttons');
 const Time = require('@utils/time');
 const QRCode = require('qrcode');
+const writeInLogFile = require('@utils/logging');
 
 const BOT_USERNAME = process.env.BOT_USERNAME;
 
@@ -14,7 +15,7 @@ async function myParticipationsHandler(state) {
         exacly: state.chatId
     }]]);
 
-    const raffleOffers = await db.find('raffle_offers', [[{
+    const raffleOffers = await db.find('raffle_tickets', [[{
         field: 'user_telegram_id',
         exacly: state.chatId
     }]]);
@@ -23,7 +24,7 @@ async function myParticipationsHandler(state) {
     if (!eventOffers.length && !raffleOffers.length) {
         return bot.sendMessage(
             state.chatId,
-            '*Вы пока нигде не участвуете* ✊\n\nПодайте заявку во вкладке *"Ближайщие события / Розыгрыши"* 👇',
+            '*Вы пока нигде не участвуете* ✊\n\nПодайте заявку во вкладке *"Ближайщие события"* 👇',
             state.options
         );
     }
@@ -100,7 +101,7 @@ async function myParticipationsHandler(state) {
                     const qrCodeBuffer = await QRCode.toBuffer(checkUrl, { type: 'png' });
 
                     const caption = `
-                        *Номер билета:* ${item.id}/n/n
+                        *Номер билета:* ${item.ticket_id}/n/n
                         *Розыгрыш:* ${title}/n
                         *Дата проведения:* ${date}/n
                         *Место:* ${place}/n
@@ -128,7 +129,7 @@ async function myParticipationsHandler(state) {
             }
         } catch (err) {
             // не ломаем всё из-за одной записи — логировать при необходимости
-            console.error('myParticipationsHandler error:', err);
+            writeInLogFile(err);
         }
     }
 

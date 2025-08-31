@@ -5,6 +5,14 @@ const config = require('@/config');
 
 //выбор мероприятия для участия
 async function selectRaffleToJoin(state, message) {
+
+    //eslint-disable-next-line no-useless-escape
+    if (message && message.match(/[\*\(\)\[\]\`_]/g)) {
+        const warnMessage = `🔁 *Ввод содержит запрещенные символы*/n/n
+        Повторите ввод используя кириллицу, или латинские буквы`.format();
+        return bot.sendMessage(state.chatId, warnMessage, state.options);
+    }
+
     if(state.stepName === 'fullname'){
 
         if(!message) {
@@ -31,7 +39,13 @@ async function selectRaffleToJoin(state, message) {
             return bot.sendMessage(state.chatId, '🔁 Введите номер телефона (Для контакта с вами)', state.options);
         }
 
-        state.data.phone = Number(message.replace('\s', ''));
+        const numStr = message.replaceAll(' ', '');
+
+        if(isNaN(numStr) || numStr.length !== 11) {
+            return await bot.sendMessage(state.chatId, "🔁 Номер телефона имеет неверный формат.\n\nПример: 8 987 654 32 10", state.options);
+        }
+
+        state.data.phone = numStr;
 
         //управление
         const buttons = createButtons([{

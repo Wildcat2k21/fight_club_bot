@@ -6,12 +6,12 @@ const escapeMarkdown = require('@utils/escape-markdown');
 const tableNames = {
     event: 'event_offers',
     merch: 'merch_offers',
-    raffle: 'raffle_offers'
+    raffle: 'raffle_tickets'
 }
 
 const actionNames = {
     event: 'участие в мероприятии',
-    merch: 'приобретение мерча',
+    merch: 'приобретение товара',
     raffle: 'участие в розыгрыше'
 }
 
@@ -41,11 +41,16 @@ async function deleteOffer(state, offerType, offerId) {
     }]]);
 
     if(!offer.accepted) {
-        await bot.sendMessage(offer.user_telegram_id, `*Ваш заказ на ${offerClause} "${offer.title}" был отменен. Попробуйте переоформить 🔁*/n/n
-            Если считаете это ошибкой, напишите нам @${escapeMarkdown(ADMIN_TELEGRAM_USERNAME)} 👈`.format(), createButtons([{
-            text: 'На главную 🔙',
-            data: 'main menu'
-        }]));
+        try {
+            await bot.sendMessage(offer.user_telegram_id, `*Ваш заказ на ${offerClause} "${offer.title}" был отменен. Попробуйте переоформить 🔁*/n/n
+                Если считаете это ошибкой, напишите нам @${escapeMarkdown(ADMIN_TELEGRAM_USERNAME)} 👈`.format(), createButtons([{
+                text: 'На главную 🔙',
+                data: 'main menu'
+            }]));
+        }
+        catch {
+            /** empty string */
+        }
     }
 
     await bot.sendMessage(state.chatId, `*Заказ на ${offerClause} №${offerId} отменен ✔️*`, { parse_mode: 'Markdown' });

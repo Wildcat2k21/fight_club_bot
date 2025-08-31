@@ -20,7 +20,7 @@ function adminOptions() {
         data: 'menage offers'
     },
     {
-        text: 'Мерчи 👑',
+        text: 'Товары 👑',
         data: 'menage merch'
     },
     {

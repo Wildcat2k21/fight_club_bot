@@ -7,9 +7,10 @@ const express = require('express');
 
 // Пользовательские модули
 const { initServices } = require('./services');
-const writeInLogFile = require('@utils/logging.js');
-const createButtons = require('@utils/create-buttons.js');
-const decodeCommand = require('@other/decode-command.js');
+const writeInLogFile = require('@utils/logging');
+const createButtons = require('@utils/create-buttons');
+const decodeCommand = require('@other/decode-command');
+const escapeMarkdown = require('@utils/escape-markdown');
 
 //основная конфигурация
 const PORT = process.env.PORT || 3030;
@@ -22,7 +23,6 @@ const config = require(CONFIG_FILE);
 const app = express();
 
 initServices().then(async () => {
-    writeInLogFile("debug log");
     const { getServices } = require('@services');
     const { bot, states, db } = getServices();
 
@@ -68,6 +68,11 @@ initServices().then(async () => {
     const raffleList = require('./helpers/raffle/raffle-list');
     const selectRaffleToJoin = require('./helpers/raffle/select-raffle-to-join');
     const confirmJoinRaffle = require('./helpers/raffle/confirm-join-raffle');
+    const handleRaffleWinner = require('./helpers/raffle/handle-raffle-winner');
+    const enterRaffleWinner = require('./helpers/raffle/enter-raffle-winner');
+    const checkRaffleWinners = require('./helpers/raffle/check-raffle-winners');
+    const addManualRaffMember = require('./helpers/raffle/add-manual-raff-member');
+    const confirmNewManRaffMember = require('./helpers/raffle/confirm-new-manual-raff-member');
 
     const myParticipationsHandler = require('./helpers/other/my-participations-handler');
 
@@ -158,6 +163,15 @@ initServices().then(async () => {
             //ввод нового мерча
             if (state.action === 'add merch') {
                 return handleMerchMenagment(state, msg.text);
+            }
+
+            if(state.action === "select raffle winner"){
+                return await handleRaffleWinner(state, msg.text);
+            }
+
+            //ручной ввод навого участника розыгрыша
+            if(state.action === 'addManualRaffleMember'){
+                return await addManualRaffMember(state, msg.text);
             }
 
             //обработка создания новой рассылки
@@ -353,25 +367,33 @@ initServices().then(async () => {
                 return state.executeLastStep();
             }
 
-            //Выбор победителей
-            if (msg.data.indexOf('RaffleWinner') !== -1 && state.action === 'default') {
-                const raffleId = msg.data.split('=')[1];
-                
-                //кнопки отмены            
-                const buttons = createButtons([{
-                    text: 'Отменить ✖️',
-                    data: 'main menu'
-                }])
+            //Просмотр победителей
+            if((/^CheckRaffleWinner/).test(msg.data) && state.action === 'default'){
+                return await checkRaffleWinners(state, msg.data);
+            }
 
-                const prizes = await db.find('winners');
-                state.action = "select raffle winner"
-                state.recordStep("winner number", `
-                    ℹ️ *Осталось призовых мест: ${prizes.length}. Введите номер билета победителя и номер места, к примеру:*/n/n
-                    13:1 *(Что означает 13 билет занят 1 место)/n/n
-                    📨 После выбора победителя, будет выполнена автоматическая рассылка всем участникам о выбранном победители*`
-                    .format(),buttons);
+            //Выбор победителей
+            if ((/^addManualRaffleMember/).test(msg.data) && state.action === 'default') {
+                const raffleId = msg.data.split('=')[1];
+
+                state.data.raffleId = raffleId;
+                state.action = "addManualRaffleMember";
+                state.recordStep("fullname", "ℹ️ Введите ФИО участника", createButtons([{
+                    text: 'Отмена ✖️',
+                    data: 'main menu'
+                }]));
 
                 return state.executeLastStep();
+            }
+
+            //Выбор победителей
+            if ((/^RaffleWinner/).test(msg.data) && state.action === 'default') {
+                return await enterRaffleWinner(state, msg.data)
+            }
+
+            // Подверждение нового участника розыгрыша указанного руками
+            if(msg.data === 'confirmNewManualRaffMember' && state.action === 'addManualRaffleMember') {
+                return await confirmNewManRaffMember(state);
             }
 
             // ---------------------------- Обработка статистики администратора -----------------------------
@@ -409,7 +431,7 @@ initServices().then(async () => {
                 const existMerch = await db.find('merch', [[{ field: 'id', exacly: merchId }]], true);
 
                 if (!existMerch) {
-                    return await bot.sendMessage(state.chatId, '*Мерч не найден* ✊', { parse_mode: 'Markdown' });
+                    return await bot.sendMessage(state.chatId, '*Товар не найден* ✊', { parse_mode: 'Markdown' });
                 }
 
                 state.data.replaceMerchId = merchId;
@@ -428,7 +450,7 @@ initServices().then(async () => {
                     data: 'main menu'
                 }])
 
-                state.recordStep('name', 'ℹ Введите название мерча', buttons);
+                state.recordStep('name', 'ℹ Введите название товара', buttons);
                 return state.executeLastStep();
             }
 
@@ -677,7 +699,7 @@ initServices().then(async () => {
                 const raffleId = msg.data.split('=')[1];
 
                 //проверка на участие или подание заявки
-                const existOffer = await db.find('raffle_offers', [[{
+                const existOffer = await db.find('raffle_tickets', [[{
                     field: 'user_telegram_id',
                     exacly: state.chatId
                 }, {
@@ -755,7 +777,6 @@ initServices().then(async () => {
     //запуск сервера
     app.listen(PORT, '0.0.0.0', async () => {
         console.clear();
-        // await initConnection();
         await initMailingsTimers();
         writeInLogFile(`Сервер запущен на порту ${PORT} ✨`);
     });

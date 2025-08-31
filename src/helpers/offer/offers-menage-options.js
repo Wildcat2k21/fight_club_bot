@@ -26,7 +26,7 @@ async function offersMenageOptions(state) {
 
         let buttons;
 
-        const offerTypeCase = offer.type === 'merch' ? 'на мерч' : 'на участие в мероприятии';
+        const offerTypeCase = offer.type === 'merch' ? 'на товар' : 'на участие в мероприятии';
 
         const priceClause = Number(offer.to_pay) ? `${offer.to_pay} ₽` : "Бесплатно";
 
@@ -64,7 +64,7 @@ async function offersMenageOptions(state) {
     }])
 
     await bot.sendMessage(state.chatId, `ℹ *Удалить заказ можно после его подтверждения.*/n
-    Рекомендуется это делать только после участия или получения мерча. 
+    Рекомендуется это делать только после участия или получения товара. 
     В случае отказа заказ будет автоматически удален./n/n
     Рекомендуется проверять заказы пользователей на подленнсть с предоставлением их QR-кода. 
     После считывания вам будет доступна подробная информация о заявке, и заказ будет автоматически закрыт.`.format(), state.options);

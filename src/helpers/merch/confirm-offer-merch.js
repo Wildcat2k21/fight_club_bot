@@ -33,7 +33,7 @@ async function confirmOfferMerch(state) {
     const priceClause = Number(state.data.to_pay) ? `${state.data.to_pay} ₽` : "Бесплатно";
 
     //вывод сообщения администратору
-    await bot.sendMessage(ADMIN_TELEGRAM_ID, `ℹ *Новая заявка на покупку мерча: "${state.data.title}*"/n/n
+    await bot.sendMessage(ADMIN_TELEGRAM_ID, `ℹ *Новая заявка на покупку товара: "${state.data.title}*"/n/n
     *От:* @${escapeMarkdown(state.data.username)}/n
     *К оплате:* ${priceClause}/n/n
     *Заявка также будет отображена в "Заказах", где ее можно подтвердить или отклонить*

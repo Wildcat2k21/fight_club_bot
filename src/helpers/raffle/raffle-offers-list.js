@@ -8,45 +8,50 @@ const Time = require('@utils/time');
 async function raffleOffersList(state, raffleId) {
 
     // получение данных
-    const raffleOffers = await db.find('raffle_offers', [[{
+    const raffleTickets = await db.find('raffle_tickets', [[{
         field: 'accepted', exacly: 1
     }, {
         field: 'raffle_id', exacly: raffleId
     }]]);
 
     // если участников пока нет
-    if (!raffleOffers.length) {
+    if (!raffleTickets.length) {
         return bot.sendMessage(state.chatId, '*Участников пока нет* 🎟', { parse_mode: 'Markdown' });
     }
 
-    // общее число участников
-    await bot.sendMessage(state.chatId, `👥 *Всего участников:* ${raffleOffers.length}`, { parse_mode: 'Markdown' });
-
     // вывод участников
-    for (let participant of raffleOffers) {
+    for (let ticket of raffleTickets) {
 
         // получаем юзера (если он есть в users)
         let currentUser = null;
-        if (participant.user_telegram_id) {
+
+        if (ticket.user_telegram_id) {
             currentUser = await db.find('users', [[{
                 field: 'telegram_id',
-                exacly: participant.telegram_id
+                exacly: ticket.user_telegram_id
             }]], true);
         }
 
         // информация об участнике
         const message = `
-            *ФИО:* ${escapeMarkdown(participant.fullname)}
-            *Телефон:* ${escapeMarkdown(participant.phone)}
-            ${participant.user_telegram_id && currentUser ? `*Телеграм:* @${escapeMarkdown(currentUser.username)}` : ''}
+            *Билет №${ticket.ticket_id}*/n/n
+            👤 *ФИО:* ${ticket.fullname}/n
+            📞 *Телефон:* ${ticket.phone}
+            ${
+                currentUser ?
+                    `/n*💬 Контакт:* @${escapeMarkdown(currentUser.username)}` :
+                    '/n/n*❗️ Участник указан вручную, билет не может быть проверен через QR код, связь с участником возможна только по телефону.*'
+            }
         `.format();
 
         await bot.sendMessage(state.chatId, message, { parse_mode: 'Markdown' });
     }
 
-    await bot.sendMessage(state.chatId, '*Тут отображен список участников розыгрыша, участие которых вы подтвердили*', createButtons([{
-        text: 'На главную 🔙',
-        data: 'main menu'
+    await bot.sendMessage(state.chatId, `
+        👥 *Всего участников:* ${raffleTickets.length}/n/n
+        *Тут отображен список участников розыгрыша, участие которых вы подтвердили*`.format(), createButtons([{
+            text: 'На главную 🔙',
+            data: 'main menu'
     }]));
 }
 

@@ -30,21 +30,26 @@ async function rafflesMenageOptions(state) {
         {
             text: 'Участники 👥',
             data: 'RaffleOffers=' + raffle.id
-        },{
+        },
+        {
+            text: 'Добавить участника 👤',
+            data: 'addManualRaffleMember=' + raffle.id
+        },
+        {
             text: 'Удалить ✖️',
             data: 'DeleteRaffle=' + raffle.id
         }]);
 
         const priceClause = Number(raffle.price) ? `${raffle.price} ₽` : "Бесплатно";
 
-        const prizesForRaffle = await db.find('winners', [[{field: 'raffle_id', exacly: raffle.id}]]);
+        const prizesForRaffle = await db.find('raffle_winners', [[{field: 'raffle_id', exacly: raffle.id}]]);
 
         // готовим предпросмотр с кнопками
         const prizeClause = prizesForRaffle.length === 1 ?
             "*🎁 Приз: *" : "/n*🎁 Призы:*/n";
 
         const prizePart = prizesForRaffle.length === 1 ?
-            prizesForRaffle[0] + '/n' :
+            prizesForRaffle[0].prize + '/n' :
             prizesForRaffle.map(({ prize }, i) => `${i + 1} место — ${ prize }/n`).join('');
 
         await bot.sendMessage(state.chatId, `

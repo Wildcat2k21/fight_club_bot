@@ -8,7 +8,7 @@ async function merchMenageOptions(state) {
 
     //информация об отсутствии событий
     if (!allMerch.length) {
-        await bot.sendMessage(state.chatId, '*Мерчи отсутствуют* ✊', { parse_mode: 'Markdown' });
+        await bot.sendMessage(state.chatId, '*Товары отсутствуют* ✊', { parse_mode: 'Markdown' });
     }
 
     //отправка всех событий
@@ -34,7 +34,7 @@ async function merchMenageOptions(state) {
 
     //кнопка добавления нового события
     state.options = createButtons([{
-        text: 'Создать новый мерч ➕',
+        text: 'Создать новый товар ➕',
         data: 'add merch'
     }, {
         text: 'На главную 🔙',
@@ -42,7 +42,7 @@ async function merchMenageOptions(state) {
     }]);
 
     //добавить новый заказ
-    return bot.sendMessage(state.chatId, '*Вы также можете добавить новый мерч 👇*', state.options);
+    return bot.sendMessage(state.chatId, '*Вы также можете добавить новый товар 👇*', state.options);
 }
 
 module.exports = merchMenageOptions;

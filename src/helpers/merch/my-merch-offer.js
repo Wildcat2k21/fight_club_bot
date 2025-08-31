@@ -14,7 +14,7 @@ async function myMerchOffer(state) {
     }]]));
 
     if (!myMerch.length) {
-        return await bot.sendMessage(state.chatId, '*У вас пока отсутствуют заказы* ✊\n\nЗакажи свой уникальный мерч в *"Заказать мерч"* 👇', state.options);
+        return await bot.sendMessage(state.chatId, '*У вас пока отсутствуют заказы* ✊\n\nЗакажи свой уникальный товар в *"Купить"* 👇', state.options);
     }
 
     for (let item of myMerch) {
@@ -54,7 +54,7 @@ async function myMerchOffer(state) {
         }
     }
 
-    await bot.sendMessage(state.chatId, '*После подтверждения заказа вам доступен QR код для получения мерча* 💪', createButtons([{
+    await bot.sendMessage(state.chatId, '*После подтверждения заказа вам доступен QR код для получения товара* 💪', createButtons([{
         text: 'На главную 🔙',
         data: 'main menu'
     }]));

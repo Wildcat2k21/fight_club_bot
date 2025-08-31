@@ -12,22 +12,14 @@ async function handleStatistics(state) {
     const totalNews = await db.executeWithReturning('SELECT COUNT(*) FROM mailings')
     const totalDiscounts = await db.executeWithReturning('SELECT COUNT(*) FROM discounts')
 
-    //получение подтвержденных заказов на участие и мерчи
-    const cashFromMerch = await db.executeWithReturning('SELECT SUM(to_pay) FROM merch_offers WHERE accepted = 1')
-    const cashFromEvent = await db.executeWithReturning('SELECT SUM(to_pay) FROM event_offers WHERE accepted = 1')
-    const totalCash = cashFromMerch[0]['SUM(to_pay)'] + cashFromEvent[0]['SUM(to_pay)'];
-
     //вывод данных
     const message = `
         👥 Всего пользователей:  ${totalUsers[0]['COUNT(*)']}/n
         📍 Всего событий: ${totalEvents[0]['COUNT(*)']}/n
-        👑 Всего мерчей: ${totalMerch[0]['COUNT(*)']}/n
+        👑 Всего товаров: ${totalMerch[0]['COUNT(*)']}/n
         🥊 Всего участников:  ${totalParticipants[0]['COUNT(*)']}/n
         📨 Всего рассылок:  ${totalNews[0]['COUNT(*)']}/n
-        💯 Всего скидок:  ${totalDiscounts[0]['COUNT(*)']}/n/n
-        💸 *Прибыль с мерчей:* ${cashFromMerch[0]['SUM(to_pay)'] || 0} ₽/n
-        💸 *Прибыль с участников:* ${cashFromEvent[0]['SUM(to_pay)'] || 0} ₽/n
-        🫰 *Прибыль суммарно:* ${totalCash || 0} ₽/n
+        💯 Всего скидок:  ${totalDiscounts[0]['COUNT(*)']}
     `.format();
 
     bot.sendMessage(state.chatId, message, state.options);
