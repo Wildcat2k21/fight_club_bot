@@ -30,7 +30,7 @@ async function userMerchHandler(state) {
         await bot.sendMessage(state.chatId, message, buttons);
     }
 
-    await bot.sendMessage(state.chatId, '*Выберите свой орининальный принт* 💪', createButtons([{
+    await bot.sendMessage(state.chatId, '*Мы постоянно пополняем ассортимент* 💪', createButtons([{
         text: 'На главную 🔙',
         data: 'main menu'
     }]));
