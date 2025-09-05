@@ -9,7 +9,7 @@ docker run -d \
   --restart always \
   -e TZ=Europe/Moscow \
   -p 3030:3030 \
-  -v $(pwd)/sqlit/app.db:/app/sqlit/app.db \
+  -v $(pwd)/sqlite/app.db:/app/sqlite/app.db \
   -v $(pwd)/log.txt:/app/log.txt \
   fight-bot
 
