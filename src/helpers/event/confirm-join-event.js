@@ -8,12 +8,12 @@ const ADMIN_TELEGRAM_ID = Number(process.env.ADMIN_TELEGRAM_ID);
 //подтверждение участия
 async function confirmJoinEvent(state) {
 
-    state.callTimeoutLimit(64800000, 'new offer', 3);
+    // state.callTimeoutLimit(64800000, 'new offer', 3);
 
-    if (!state.timeoutIsEnd('new offer')) {
-        state.default();
-        return await bot.sendMessage(state.chatId, `ℹ️ *Достигнут лимит на 3 заказа в сутки*`.format(), state.options);
-    }
+    // if (!state.timeoutIsEnd('new offer')) {
+    //     state.default();
+    //     return await bot.sendMessage(state.chatId, `ℹ️ *Достигнут лимит на 3 заказа в сутки*`.format(), state.options);
+    // }
 
     //подтверждение участия
     const eventOfferId = await db.insert('event_offers', {

@@ -8,16 +8,16 @@ const ADMIN_TELEGRAM_ID = Number(process.env.ADMIN_TELEGRAM_ID);
 // подтверждение участия в розыгрыше
 async function confirmJoinRaffle(state) {
 
-    state.callTimeoutLimit(64800000, 'new raffle_ticket', 3);
+    // state.callTimeoutLimit(64800000, 'new raffle_ticket', 3);
 
-    if (!state.timeoutIsEnd('new raffle_ticket')) {
-        state.default();
-        return await bot.sendMessage(
-            state.chatId,
-            `ℹ️ *Достигнут лимит на 3 участия в сутки*`.format(),
-            state.options
-        );
-    }
+    // if (!state.timeoutIsEnd('new raffle_ticket')) {
+    //     state.default();
+    //     return await bot.sendMessage(
+    //         state.chatId,
+    //         `ℹ️ *Достигнут лимит на 3 участия в сутки*`.format(),
+    //         state.options
+    //     );
+    // }
 
     const thisRaffle = await db.find('raffles', [[{ field: "id", exacly: state.data.raffleId }]], true);
 
