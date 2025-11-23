@@ -23,6 +23,7 @@ docker run -d \
   -p 3030:3030 \
   -v $(pwd)/sqlite/app.db:/app/sqlite/app.db \
   -v $(pwd)/log.txt:/app/log.txt \
+  -v $(pwd)/src/config.json:/app/src/config.json \
   $IMAGE_NAME
 
 echo "Контейнер запущен. Логи:"
